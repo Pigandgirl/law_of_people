@@ -1,0 +1,16 @@
+# 1. 加载镜像
+docker load -i law_project_full.tar
+
+# 2. 创建网络
+docker network create law_net
+
+# 3. 启动数据库容器
+# 将宿主机的 /home/law/mysql 目录挂载到容器的 /var/lib/mysql，实现数据库数据持久化
+docker run -d --name law_db --network law_net -v /home/law/mysql:/var/lib/mysql law_project_db:latest
+
+# 4. 启动Web应用容器
+# 注意：Web容器启动时会连接数据库。建议在启动数据库容器后等待几秒再启动Web容器。
+# 如果Web容器启动失败（Exited），请使用 docker restart law_web 重启它。
+# 将宿主机的 /home/law/media 目录挂载到容器的 /app/media，实现上传文件持久化
+# 将宿主机的 /home/law/law_file 目录挂载到容器的 /app/law_file，实现案例文件持久化
+docker run -d -p 8080:8080 --name law_web --network law_net -e DATABASE_HOST=law_db -e DATABASE_PASSWORD=123456 -v /home/law/media:/app/media -v /home/law/law_file:/app/law_file law_project:latest
