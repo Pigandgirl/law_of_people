@@ -1,3 +1,6 @@
+#0.下载镜像
+镜像下载地址：https://pan.quark.cn/s/6a21ce5167f2
+
 # 1. 加载镜像
 docker load -i law_project_full.tar
 
